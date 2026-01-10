@@ -38,6 +38,11 @@ pipeline {
     
     post {
         success {
+            mail to: 'p10prmar@gmail.com',
+                subject: "Done",
+                body: """
+                Job Name: System_scan
+                """
             echo 'Python Pipeline completed successfully'
         }
         failure {
