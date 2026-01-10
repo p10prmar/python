@@ -3,7 +3,7 @@
 VAST - Vulnerability Assessment & Scanning Tool
 """
 
-impor sys
+import sys
 import os
 import requests
 import re
@@ -1451,3 +1451,4 @@ if __name__ == "__main__":
     vast = VAST()
 
     vast.run()
+
