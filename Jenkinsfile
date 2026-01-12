@@ -4,32 +4,31 @@ pipeline {
     stages {
         stage('Run Scan') {
             steps {
-                sh 'new4.py scan.py'
+                sh 'python3 new4.py scan.py'
             }
         }
 
         stage('Generate Report') {
             steps {
-                sh 'new4.py report.py'
+                sh 'python3 report.py'
             }
         }
     }
 
-    // 👇 EMAIL GOES HERE
     post {
         success {
             emailext(
-                subject: "✅ Build Success - VAPT Report",
-                body: "Scan completed successfully. Report attached.",
+                subject: "✅ Scan Successful - Report Attached",
+                body: "Scan completed successfully. Please find the report attached.",
                 to: "p10prmar@gmail.com",
-                attachmentsPattern: "reports/report.html"
+                attachmentsPattern: "reports/*.html"
             )
         }
 
         failure {
             emailext(
-                subject: "❌ Build Failed",
-                body: "Build failed. Check Jenkins console output.",
+                subject: "❌ Scan Failed",
+                body: "Scan failed. Please check Jenkins console output.",
                 to: "p10prmar@gmail.com"
             )
         }
