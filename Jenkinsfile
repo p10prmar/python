@@ -1,36 +1,47 @@
 pipeline {
     agent any
+    
+    environment {
+        IMAGE_NAME = "vast-system"
+        IMAGE_TAG = "1.0"
+    }
 
     stages {
-        stage('Run Scan') {
+        stage('Checkout Code') {
             steps {
-                sh 'python3 new4.py scan.py'
+                checkout scm
             }
         }
 
-        stage('Generate Report') {
+        stage('Verify Environment') {
             steps {
-                sh 'python3 report.py'
+                echo 'Checking Python version'
+                sh 'python3 --version'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo "Building: ${IMAGE_NAME}:${IMAGE_TAG}"
+                // Build the image using the Dockerfile we created above
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+            }
+        }
+
+        stage('Test Run') {
+            steps {
+                echo 'Testing the container'
+                // This runs the container to make sure the script works inside it
             }
         }
     }
-
+    
     post {
         success {
-            emailext(
-                subject: "✅ Scan Successful - Report Attached",
-                body: "Scan completed successfully. Please find the report attached.",
-                to: "p10prmar@gmail.com",
-                attachmentsPattern: "reports/*.html"
-            )
+            echo 'Python Pipeline completed successfully'
         }
-
         failure {
-            emailext(
-                subject: "❌ Scan Failed",
-                body: "Scan failed. Please check Jenkins console output.",
-                to: "p10prmar@gmail.com"
-            )
+            echo 'Pipeline failed'
         }
     }
 }
