@@ -38,7 +38,8 @@ pipeline {
     
     post {
         success {
-            mail to: 'p10prmar@gmail.com'
+            mail to: 'p10prmar@gmail.com',
+                body: 'done'
             echo 'Python Pipeline completed successfully'
         }
         failure {
