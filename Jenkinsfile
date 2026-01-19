@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "vast-system"
         IMAGE_TAG  = "1.0"
-        MAIL_TO    = "p10prmar@gmail.com"
+        MAIL_TO    = "p.10prmar@gmail.com"
     }
 
     stages {
