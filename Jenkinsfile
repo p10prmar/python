@@ -35,5 +35,46 @@ pipeline {
             }
         }
     }
-    
+     post {
+        success {
+            emailext(
+                subject: "✅ Jenkins Job SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+Hello Team,
+
+✅ Jenkins Job completed SUCCESSFULLY.
+
+Job Name : ${env.JOB_NAME}
+Build No : ${env.BUILD_NUMBER}
+Build URL: ${env.BUILD_URL}
+
+Regards,
+Jenkins
+""",
+                to: "p10prmar@gmail.com"
+            )
+        }
+
+        failure {
+            emailext(
+                subject: "❌ Jenkins Job FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+Hello Team,
+
+❌ Jenkins Job FAILED.
+
+Job Name : ${env.JOB_NAME}
+Build No : ${env.BUILD_NUMBER}
+Build URL: ${env.BUILD_URL}
+
+Please check logs.
+
+Regards,
+Jenkins
+""",
+                to: "p10prmar@gmail.com"
+            )
+        }
+    }
+}
 }
