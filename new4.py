@@ -1452,5 +1452,36 @@ if __name__ == "__main__":
 
     vast.run()
 
+# ==============================
+# CI / JENKINS MODE (NO INPUT)
+# ==============================
+
+def ci_run():
+    config = Config()
+    config.target = "http://testphp.vulnweb.com"
+    config.timeout = 10
+
+    scanner = VulnerabilityScanner(config)
+    results = scanner.scan_all()
+
+    report = ReportGenerator()
+    report.generate_pdf_report(
+        target=config.target,
+        results=results,
+        filename="report1.pdf"
+    )
+
+    print("[+] CI Report generated: report1.pdf")
+
+
+if __name__ == "__main__":
+    if "--ci" in sys.argv:
+        ci_run()
+    else:
+        vast = VAST()
+        vast.run()
+
+
+
 
 
