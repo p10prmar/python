@@ -36,17 +36,4 @@ pipeline {
         }
     }
     
-    post {
-        success {
-            mail to: 'p10prmar@gmail.com',
-                subject: "Build Success",
-                body: """
-                    Kudos
-                    """
-            echo 'Python Pipeline completed successfully'
-        }
-        failure {
-            echo 'Pipeline failed'
-        }
-    }
 }
