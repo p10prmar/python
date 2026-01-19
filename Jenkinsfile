@@ -1,12 +1,14 @@
 pipeline {
     agent any
-    
+
     environment {
         IMAGE_NAME = "vast-system"
-        IMAGE_TAG = "1.0"
+        IMAGE_TAG  = "1.0"
+        MAIL_TO    = "p10prmar@gmail.com"
     }
 
     stages {
+
         stage('Checkout Code') {
             steps {
                 checkout scm
@@ -22,8 +24,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                echo "Building: ${IMAGE_NAME}:${IMAGE_TAG}"
-                // Build the image using the Dockerfile we created above
+                echo "Building Docker image: ${IMAGE_NAME}:${IMAGE_TAG}"
                 sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
@@ -31,48 +32,55 @@ pipeline {
         stage('Test Run') {
             steps {
                 echo 'Testing the container'
-                // This runs the container to make sure the script works inside it
+                // Example test run (optional)
+                // sh "docker run --rm ${IMAGE_NAME}:${IMAGE_TAG}"
             }
         }
     }
-     post {
+
+    post {
+
         success {
-            emailext( 
-                subject: "✅ Jenkins Job SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            emailext(
+                to: env.MAIL_TO,
+                subject: "✅ SUCCESS | ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                mimeType: 'text/html',
                 body: """
-Hello Team,
-
-✅ Jenkins Job completed SUCCESSFULLY.
-
-Job Name : ${env.JOB_NAME}
-Build No : ${env.BUILD_NUMBER}
-Build URL: ${env.BUILD_URL}
-
-Regards,
-Jenkins
-""",
-                to: "p10prmar@gmail.com"
+                <h2 style="color:green;">Jenkins Build Successful ✅</h2>
+                <p><b>Job Name:</b> ${env.JOB_NAME}</p>
+                <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                <p><b>Docker Image:</b> ${IMAGE_NAME}:${IMAGE_TAG}</p>
+                <p><b>Status:</b> SUCCESS</p>
+                <p>
+                    <a href="${env.BUILD_URL}">
+                        👉 View Build Details
+                    </a>
+                </p>
+                <br>
+                <p>Regards,<br><b>Jenkins</b></p>
+                """
             )
         }
 
         failure {
             emailext(
-                subject: "❌ Jenkins Job FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                to: env.MAIL_TO,
+                subject: "❌ FAILED | ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                mimeType: 'text/html',
                 body: """
-Hello Team,
-
-❌ Jenkins Job FAILED.
-
-Job Name : ${env.JOB_NAME}
-Build No : ${env.BUILD_NUMBER}
-Build URL: ${env.BUILD_URL}
-
-Please check logs.
-
-Regards,
-Jenkins
-""",
-                to: "p10prmar@gmail.com"
+                <h2 style="color:red;">Jenkins Build Failed ❌</h2>
+                <p><b>Job Name:</b> ${env.JOB_NAME}</p>
+                <p><b>Build Number:</b> ${env.BUILD_NUMBER}</p>
+                <p><b>Status:</b> FAILED</p>
+                <p>
+                    <a href="${env.BUILD_URL}">
+                        👉 Check Failure Logs
+                    </a>
+                </p>
+                <br>
+                <p>Please investigate the issue.</p>
+                <p>Regards,<br><b>Jenkins</b></p>
+                """
             )
         }
     }
