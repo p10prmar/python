@@ -37,7 +37,7 @@ pipeline {
     }
      post {
         success {
-            emailext( Done 
+            emailext( Done ) 
                 subject: "✅ Jenkins Job SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: """
 Hello Team,
